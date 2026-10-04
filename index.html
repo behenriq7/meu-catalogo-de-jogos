@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Catálogo de Jogos</title>
+</head>
+
+<body>
+
+    <header>
+        <h1>Meu Catálogo de Jogos</h1>
+
+        <p>
+            Organize seus jogos, acompanhe o que está jogando
+            e registre os jogos que deseja conhecer.
+        </p>
+
+        <nav>
+            <ul>
+                <li><a href="#catalogo">Catálogo</a></li>
+                <li><a href="#cadastro">Cadastrar jogo</a></li>
+                <li><a href="#detalhes">Detalhes</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+
+        <section id="catalogo">
+            <h2>Meus jogos</h2>
+
+            <aside>
+                <h3>Pesquisar e organizar</h3>
+
+                <form>
+                    <label for="pesquisa">Pesquisar jogo:</label>
+                    <input
+                        type="search"
+                        id="pesquisa"
+                        name="pesquisa"
+                        placeholder="Digite o nome do jogo"
+                    >
+
+                    <label for="filtro-genero">Filtrar por gênero:</label>
+                    <select id="filtro-genero" name="filtro-genero">
+                        <option value="">Todos</option>
+                        <option value="acao">Ação</option>
+                        <option value="aventura">Aventura</option>
+                        <option value="esporte">Esporte</option>
+                        <option value="rpg">RPG</option>
+                        <option value="tiro">Tiro</option>
+                    </select>
+
+                    <label for="ordenacao">Ordenar por:</label>
+                    <select id="ordenacao" name="ordenacao">
+                        <option value="nome">Nome</option>
+                        <option value="ano">Ano de lançamento</option>
+                        <option value="avaliacao">Avaliação</option>
+                    </select>
+
+                    <button type="submit">Pesquisar</button>
+                </form>
+            </aside>
+
+            <section>
+                <h3>Jogos cadastrados</h3>
+
+                <article>
+                    <h4>Grand Theft Auto V</h4>
+
+                    <p><strong>Gênero:</strong> Ação</p>
+                    <p><strong>Plataforma:</strong> Xbox</p>
+                    <p><strong>Ano:</strong> 2013</p>
+                    <p><strong>Status:</strong> Jogando</p>
+                    <p><strong>Avaliação:</strong> 5/5</p>
+
+                    <button type="button">Ver detalhes</button>
+                    <button type="button">Editar</button>
+                    <button type="button">Excluir</button>
+                </article>
+
+                <article>
+                    <h4>EA Sports FC 26</h4>
+
+                    <p><strong>Gênero:</strong> Esporte</p>
+                    <p><strong>Plataforma:</strong> Xbox</p>
+                    <p><strong>Ano:</strong> 2025</p>
+                    <p><strong>Status:</strong> Jogando</p>
+                    <p><strong>Avaliação:</strong> 4/5</p>
+
+                    <button type="button">Ver detalhes</button>
+                    <button type="button">Editar</button>
+                    <button type="button">Excluir</button>
+                </article>
+
+                <article>
+                    <h4>Hogwarts Legacy</h4>
+
+                    <p><strong>Gênero:</strong> Aventura</p>
+                    <p><strong>Plataforma:</strong> Xbox</p>
+                    <p><strong>Ano:</strong> 2023</p>
+                    <p><strong>Status:</strong> Concluído</p>
+                    <p><strong>Avaliação:</strong> 5/5</p>
+
+                    <button type="button">Ver detalhes</button>
+                    <button type="button">Editar</button>
+                    <button type="button">Excluir</button>
+                </article>
+            </section>
+        </section>
+
+
+        <section id="cadastro">
+            <h2>Cadastrar novo jogo</h2>
+
+            <form>
+
+                <div>
+                    <label for="nome-jogo">Nome do jogo:</label>
+                    <input
+                        type="text"
+                        id="nome-jogo"
+                        name="nome-jogo"
+                        placeholder="Digite o nome do jogo"
+                    >
+                </div>
+
+                <div>
+                    <label for="genero">Gênero:</label>
+                    <select id="genero" name="genero">
+                        <option value="">Selecione um gênero</option>
+                        <option value="acao">Ação</option>
+                        <option value="aventura">Aventura</option>
+                        <option value="esporte">Esporte</option>
+                        <option value="rpg">RPG</option>
+                        <option value="tiro">Tiro</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="plataforma">Plataforma:</label>
+                    <select id="plataforma" name="plataforma">
+                        <option value="">Selecione uma plataforma</option>
+                        <option value="xbox">Xbox</option>
+                        <option value="playstation">PlayStation</option>
+                        <option value="pc">PC</option>
+                        <option value="nintendo">Nintendo</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="ano">Ano de lançamento:</label>
+                    <input
+                        type="number"
+                        id="ano"
+                        name="ano"
+                        min="1950"
+                        max="2100"
+                        placeholder="Ex.: 2025"
+                    >
+                </div>
+
+                <div>
+                    <label for="status">Status:</label>
+                    <select id="status" name="status">
+                        <option value="">Selecione o status</option>
+                        <option value="quero-jogar">Quero jogar</option>
+                        <option value="jogando">Jogando</option>
+                        <option value="concluido">Concluído</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="avaliacao">Avaliação:</label>
+                    <input
+                        type="number"
+                        id="avaliacao"
+                        name="avaliacao"
+                        min="0"
+                        max="5"
+                        step="1"
+                        placeholder="De 0 a 5"
+                    >
+                </div>
+
+                <div>
+                    <label for="observacoes">Observações:</label>
+                    <textarea
+                        id="observacoes"
+                        name="observacoes"
+                        rows="4"
+                        placeholder="Adicione alguma observação sobre o jogo"
+                    ></textarea>
+                </div>
+
+                <button type="submit">Cadastrar jogo</button>
+
+            </form>
+        </section>
+
+
+        <section id="detalhes">
+            <h2>Detalhes do jogo</h2>
+
+            <article>
+                <h3>Grand Theft Auto V</h3>
+
+                <p>
+                    Grand Theft Auto V é um jogo de ação e aventura
+                    desenvolvido pela Rockstar Games.
+                </p>
+
+                <ul>
+                    <li><strong>Gênero:</strong> Ação</li>
+                    <li><strong>Plataforma:</strong> Xbox</li>
+                    <li><strong>Ano de lançamento:</strong> 2013</li>
+                    <li><strong>Status:</strong> Jogando</li>
+                    <li><strong>Avaliação:</strong> 5/5</li>
+                </ul>
+
+                <button type="button">Editar jogo</button>
+                <button type="button">Excluir jogo</button>
+            </article>
+        </section>
+
+    </main>
+
+
+    <footer>
+        <p>&copy; 2026 Meu Catálogo de Jogos</p>
+        <p>Sistema desenvolvido para fins acadêmicos.</p>
+    </footer>
+
+</body>
+
+</html>
