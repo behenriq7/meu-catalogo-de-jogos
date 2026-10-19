@@ -224,3 +224,24 @@ article button:first-of-type {
     margin-top: auto;
 }
 
+@media (max-width: 850px) {
+    #catalogo {
+        grid-template-columns: 1fr;
+    }
+
+    nav ul {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    form {
+        padding: 1rem;
+    }
+
+    article button[type="button"] {
+        display: block;
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+    }
+}
