@@ -245,3 +245,10 @@ article button:first-of-type {
         margin-bottom: 0.5rem;
     }
 }
+
+#catalogo section:last-child h3 {
+    grid-column: 1 / -1; /* Faz o título ocupar todas as colunas da linha */
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
