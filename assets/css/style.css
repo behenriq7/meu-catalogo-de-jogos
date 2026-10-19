@@ -247,8 +247,20 @@ article button:first-of-type {
 }
 
 #catalogo section:last-child h3 {
-    grid-column: 1 / -1; /* Faz o título ocupar todas as colunas da linha */
+    grid-column: 1 / -1; 
     margin-bottom: 1rem;
     font-size: 1.5rem;
     color: var(--primary-color);
+}
+
+#catalogo {
+    grid-template-columns: 1fr 300px; 
+}
+
+#catalogo aside {
+    order: 2; 
+}
+
+#catalogo section:last-child {
+    order: 1; 
 }
