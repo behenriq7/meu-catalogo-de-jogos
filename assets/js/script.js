@@ -95,3 +95,48 @@ function excluirJogo(id) { console.log('Excluir jogo', id); }
 
 // Inicia a aplicação desenhando os jogos quando a página carrega
 document.addEventListener('DOMContentLoaded', renderizarJogos);
+
+// --- PASSO 2: CADASTRO E VALIDAÇÃO ---
+
+const formCadastro = document.getElementById('form-cadastro');
+
+formCadastro.addEventListener('submit', function(event) {
+    event.preventDefault(); // Evita o recarregamento padrão da página ao enviar o formulário
+
+    // 1. Capturando os dados informados
+    const nome = document.getElementById('nome-jogo').value.trim();
+    const genero = document.getElementById('genero').value;
+    const plataforma = document.getElementById('plataforma').value;
+    const ano = document.getElementById('ano').value;
+    const status = document.getElementById('status').value;
+    const avaliacao = document.getElementById('avaliacao').value;
+    const observacoes = document.getElementById('observacoes').value.trim();
+
+    // 2. Validação dos dados necessários
+    if (!nome || !genero || !plataforma || !status) {
+        alert('Atenção: Os campos Nome, Gênero, Plataforma e Status são obrigatórios!');
+        return; // Interrompe a execução se a validação falhar
+    }
+
+    // 3. Criando o objeto do novo item
+    const novoJogo = {
+        id: Date.now(), // Gera um ID único baseado na data/hora atual
+        nome: nome,
+        genero: genero,
+        plataforma: plataforma,
+        ano: ano ? parseInt(ano) : '',
+        status: status,
+        avaliacao: avaliacao ? parseInt(avaliacao) : '',
+        observacoes: observacoes
+    };
+
+    // 4. Adicionando o novo item ao sistema (localStorage)
+    const jogos = getJogos();
+    jogos.push(novoJogo);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(jogos));
+
+    // 5. Atualizando a interface e apresentando feedback
+    renderizarJogos();
+    formCadastro.reset(); // Limpa os campos do formulário
+    alert('Jogo cadastrado com sucesso!');
+});
