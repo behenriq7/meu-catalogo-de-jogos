@@ -60,7 +60,7 @@ function formatarLabel(valor) {
 function renderizarJogos() {
     const listaJogos = document.getElementById('lista-jogos');
     const jogos = getJogos();
-    
+
     listaJogos.innerHTML = ''; // Limpa a lista antes de desenhar
 
     if (jogos.length === 0) {
@@ -70,7 +70,7 @@ function renderizarJogos() {
 
     jogos.forEach(jogo => {
         const article = document.createElement('article');
-        
+
         article.innerHTML = `
             <h4>${jogo.nome}</h4>
             <p><strong>Gênero:</strong> ${formatarLabel(jogo.genero)}</p>
@@ -83,7 +83,7 @@ function renderizarJogos() {
             <button type="button" onclick="editarJogo(${jogo.id})">Editar</button>
             <button type="button" onclick="excluirJogo(${jogo.id})">Excluir</button>
         `;
-        
+
         listaJogos.appendChild(article);
     });
 }
@@ -95,23 +95,23 @@ function excluirJogo(id) {
     // Pede uma confirmação antes de apagar
     if (confirm('Tem certeza que deseja excluir este jogo?')) {
         let jogos = getJogos();
-        
+
         // Filtra o array, mantendo apenas os jogos com ID diferente do que foi clicado
         jogos = jogos.filter(jogo => jogo.id !== id);
-        
+
         // Salva o novo array no localStorage
         localStorage.setItem(STORAGE_KEY, JSON.stringify(jogos));
-        
+
         // Atualiza a lista na tela
         renderizarJogos();
-        
+
         // Se o jogo excluído for o mesmo que está aberto nos detalhes, limpa a área
         const detalhes = document.getElementById('conteudo-detalhes');
         if (detalhes.dataset.jogoId == id) {
             detalhes.innerHTML = '<p>Selecione um jogo no catálogo para visualizar seus detalhes aqui.</p>';
             delete detalhes.dataset.jogoId;
         }
-        
+
         alert('Jogo excluído com sucesso!');
     }
 }
@@ -121,13 +121,13 @@ function verDetalhes(id) {
     const jogos = getJogos();
     // Procura o jogo específico pelo ID
     const jogo = jogos.find(j => j.id === id);
-    
+
     if (jogo) {
         const containerDetalhes = document.getElementById('conteudo-detalhes');
-        
+
         // Guarda o ID no HTML para sabermos qual jogo está aberto (útil para exclusão/edição)
-        containerDetalhes.dataset.jogoId = jogo.id; 
-        
+        containerDetalhes.dataset.jogoId = jogo.id;
+
         // Injeta o HTML com os dados do jogo selecionado
         containerDetalhes.innerHTML = `
             <h3>${jogo.nome}</h3>
@@ -142,26 +142,54 @@ function verDetalhes(id) {
             <button type="button" onclick="editarJogo(${jogo.id})">Editar jogo</button>
             <button type="button" onclick="excluirJogo(${jogo.id})">Excluir jogo</button>
         `;
-        
+
         // Rola a página suavemente até a seção de detalhes
         document.getElementById('detalhes').scrollIntoView({ behavior: 'smooth' });
     }
 }
 
-// A função de edição continua vazia
-function editarJogo(id) { console.log('Editar jogo, passo 4 em breve!', id); }
+// --- PASSO 4: EDIÇÃO ---
+
+// Função para carregar os dados de um jogo no formulário para edição
+function editarJogo(id) {
+    const jogos = getJogos();
+    const jogo = jogos.find(j => j.id === id);
+
+    if (jogo) {
+        // Preenche os campos do formulário com os dados do jogo
+        document.getElementById('nome-jogo').value = jogo.nome;
+        document.getElementById('genero').value = jogo.genero;
+        document.getElementById('plataforma').value = jogo.plataforma;
+        document.getElementById('ano').value = jogo.ano;
+        document.getElementById('status').value = jogo.status;
+        document.getElementById('avaliacao').value = jogo.avaliacao;
+        document.getElementById('observacoes').value = jogo.observacoes;
+
+        // Guarda o ID do jogo no formulário para sabermos que é uma edição
+        const formCadastro = document.getElementById('form-cadastro');
+        formCadastro.dataset.editandoId = jogo.id;
+
+        // Muda o título e o botão para indicar visualmente a edição
+        document.querySelector('#cadastro h2').textContent = 'Editar Jogo';
+        formCadastro.querySelector('button[type="submit"]').textContent = 'Salvar Alterações';
+
+        // Rola a página suavemente até o formulário
+        document.getElementById('cadastro').scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+// --- EVENTOS E INICIALIZAÇÃO ---
 
 // Inicia a aplicação desenhando os jogos quando a página carrega
 document.addEventListener('DOMContentLoaded', renderizarJogos);
 
-// --- PASSO 2: CADASTRO E VALIDAÇÃO ---
-
+// Captura o formulário do HTML
 const formCadastro = document.getElementById('form-cadastro');
 
-formCadastro.addEventListener('submit', function(event) {
-    event.preventDefault(); // Evita o recarregamento padrão da página ao enviar o formulário
+// Lógica de salvar (novo jogo ou edição)
+formCadastro.addEventListener('submit', function (event) {
+    event.preventDefault();
 
-    // 1. Capturando os dados informados
     const nome = document.getElementById('nome-jogo').value.trim();
     const genero = document.getElementById('genero').value;
     const plataforma = document.getElementById('plataforma').value;
@@ -170,31 +198,63 @@ formCadastro.addEventListener('submit', function(event) {
     const avaliacao = document.getElementById('avaliacao').value;
     const observacoes = document.getElementById('observacoes').value.trim();
 
-    // 2. Validação dos dados necessários
     if (!nome || !genero || !plataforma || !status) {
         alert('Atenção: Os campos Nome, Gênero, Plataforma e Status são obrigatórios!');
-        return; // Interrompe a execução se a validação falhar
+        return;
     }
 
-    // 3. Criando o objeto do novo item
-    const novoJogo = {
-        id: Date.now(), // Gera um ID único baseado na data/hora atual
-        nome: nome,
-        genero: genero,
-        plataforma: plataforma,
-        ano: ano ? parseInt(ano) : '',
-        status: status,
-        avaliacao: avaliacao ? parseInt(avaliacao) : '',
-        observacoes: observacoes
-    };
+    let jogos = getJogos();
+    const editandoId = formCadastro.dataset.editandoId; // Verifica se tem um ID guardado (modo edição)
 
-    // 4. Adicionando o novo item ao sistema (localStorage)
-    const jogos = getJogos();
-    jogos.push(novoJogo);
+    if (editandoId) {
+        // MODO EDIÇÃO: Encontra o jogo no array e atualiza os dados
+        jogos = jogos.map(jogo => {
+            if (jogo.id == editandoId) {
+                return {
+                    ...jogo, // Mantém o ID original
+                    nome: nome,
+                    genero: genero,
+                    plataforma: plataforma,
+                    ano: ano ? parseInt(ano) : '',
+                    status: status,
+                    avaliacao: avaliacao ? parseInt(avaliacao) : '',
+                    observacoes: observacoes
+                };
+            }
+            return jogo;
+        });
+
+        alert('Jogo atualizado com sucesso!');
+
+        // Restaura o formulário para o visual original (Modo Cadastro)
+        delete formCadastro.dataset.editandoId;
+        document.querySelector('#cadastro h2').textContent = 'Cadastrar novo jogo';
+        formCadastro.querySelector('button[type="submit"]').textContent = 'Cadastrar jogo';
+
+        // Se o jogo editado estiver aberto na área de detalhes, atualiza lá também
+        const detalhes = document.getElementById('conteudo-detalhes');
+        if (detalhes.dataset.jogoId == editandoId) {
+            verDetalhes(parseInt(editandoId));
+        }
+
+    } else {
+        // MODO CADASTRO NOVO
+        const novoJogo = {
+            id: Date.now(),
+            nome: nome,
+            genero: genero,
+            plataforma: plataforma,
+            ano: ano ? parseInt(ano) : '',
+            status: status,
+            avaliacao: avaliacao ? parseInt(avaliacao) : '',
+            observacoes: observacoes
+        };
+        jogos.push(novoJogo);
+        alert('Jogo cadastrado com sucesso!');
+    }
+
+    // Salva, renderiza a lista e limpa o form
     localStorage.setItem(STORAGE_KEY, JSON.stringify(jogos));
-
-    // 5. Atualizando a interface e apresentando feedback
     renderizarJogos();
-    formCadastro.reset(); // Limpa os campos do formulário
-    alert('Jogo cadastrado com sucesso!');
+    formCadastro.reset();
 });
