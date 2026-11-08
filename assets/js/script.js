@@ -88,10 +88,68 @@ function renderizarJogos() {
     });
 }
 
-// Funções vazias para evitar erros nos botões (implementaremos nos próximos passos)
-function verDetalhes(id) { console.log('Detalhes do jogo', id); }
-function editarJogo(id) { console.log('Editar jogo', id); }
-function excluirJogo(id) { console.log('Excluir jogo', id); }
+// --- PASSO 3: EXCLUSÃO E DETALHES ---
+
+// Função para excluir um jogo
+function excluirJogo(id) {
+    // Pede uma confirmação antes de apagar
+    if (confirm('Tem certeza que deseja excluir este jogo?')) {
+        let jogos = getJogos();
+        
+        // Filtra o array, mantendo apenas os jogos com ID diferente do que foi clicado
+        jogos = jogos.filter(jogo => jogo.id !== id);
+        
+        // Salva o novo array no localStorage
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(jogos));
+        
+        // Atualiza a lista na tela
+        renderizarJogos();
+        
+        // Se o jogo excluído for o mesmo que está aberto nos detalhes, limpa a área
+        const detalhes = document.getElementById('conteudo-detalhes');
+        if (detalhes.dataset.jogoId == id) {
+            detalhes.innerHTML = '<p>Selecione um jogo no catálogo para visualizar seus detalhes aqui.</p>';
+            delete detalhes.dataset.jogoId;
+        }
+        
+        alert('Jogo excluído com sucesso!');
+    }
+}
+
+// Função para ver os detalhes
+function verDetalhes(id) {
+    const jogos = getJogos();
+    // Procura o jogo específico pelo ID
+    const jogo = jogos.find(j => j.id === id);
+    
+    if (jogo) {
+        const containerDetalhes = document.getElementById('conteudo-detalhes');
+        
+        // Guarda o ID no HTML para sabermos qual jogo está aberto (útil para exclusão/edição)
+        containerDetalhes.dataset.jogoId = jogo.id; 
+        
+        // Injeta o HTML com os dados do jogo selecionado
+        containerDetalhes.innerHTML = `
+            <h3>${jogo.nome}</h3>
+            <p>${jogo.observacoes ? jogo.observacoes : 'Nenhuma observação cadastrada para este jogo.'}</p>
+            <ul>
+                <li><strong>Gênero:</strong> ${formatarLabel(jogo.genero)}</li>
+                <li><strong>Plataforma:</strong> ${formatarLabel(jogo.plataforma)}</li>
+                <li><strong>Ano de lançamento:</strong> ${jogo.ano || 'Não informado'}</li>
+                <li><strong>Status:</strong> ${formatarLabel(jogo.status)}</li>
+                <li><strong>Avaliação:</strong> ${jogo.avaliacao ? jogo.avaliacao + '/5' : 'Sem avaliação'}</li>
+            </ul>
+            <button type="button" onclick="editarJogo(${jogo.id})">Editar jogo</button>
+            <button type="button" onclick="excluirJogo(${jogo.id})">Excluir jogo</button>
+        `;
+        
+        // Rola a página suavemente até a seção de detalhes
+        document.getElementById('detalhes').scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+// A função de edição continua vazia
+function editarJogo(id) { console.log('Editar jogo, passo 4 em breve!', id); }
 
 // Inicia a aplicação desenhando os jogos quando a página carrega
 document.addEventListener('DOMContentLoaded', renderizarJogos);
