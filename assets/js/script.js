@@ -56,15 +56,40 @@ function formatarLabel(valor) {
     return labels[valor] || valor;
 }
 
-// Função para renderizar os jogos na tela
+// Função para renderizar os jogos na tela (AGORA COM FILTROS E ORDENAÇÃO)
 function renderizarJogos() {
     const listaJogos = document.getElementById('lista-jogos');
-    const jogos = getJogos();
+    let jogos = getJogos();
 
+    // 1. Lendo os valores preenchidos na área de pesquisa
+    const termoPesquisa = document.getElementById('pesquisa').value.toLowerCase().trim();
+    const filtroGenero = document.getElementById('filtro-genero').value;
+    const ordenacao = document.getElementById('ordenacao').value;
+
+    // 2. Aplicando o Filtro de Texto (Pesquisa por nome)
+    if (termoPesquisa) {
+        jogos = jogos.filter(jogo => jogo.nome.toLowerCase().includes(termoPesquisa));
+    }
+
+    // 3. Aplicando o Filtro de Gênero
+    if (filtroGenero) {
+        jogos = jogos.filter(jogo => jogo.genero === filtroGenero);
+    }
+
+    // 4. Aplicando a Ordenação
+    if (ordenacao === 'nome') {
+        jogos.sort((a, b) => a.nome.localeCompare(b.nome)); // Ordem alfabética
+    } else if (ordenacao === 'ano') {
+        jogos.sort((a, b) => (b.ano || 0) - (a.ano || 0)); // Mais novos primeiro
+    } else if (ordenacao === 'avaliacao') {
+        jogos.sort((a, b) => (b.avaliacao || 0) - (a.avaliacao || 0)); // Maior nota primeiro
+    }
+
+    // 5. Desenhando na tela
     listaJogos.innerHTML = ''; // Limpa a lista antes de desenhar
 
     if (jogos.length === 0) {
-        listaJogos.innerHTML = '<p>Nenhum jogo cadastrado.</p>';
+        listaJogos.innerHTML = '<p>Nenhum jogo encontrado com estes filtros.</p>';
         return;
     }
 
@@ -75,7 +100,7 @@ function renderizarJogos() {
             <h4>${jogo.nome}</h4>
             <p><strong>Gênero:</strong> ${formatarLabel(jogo.genero)}</p>
             <p><strong>Plataforma:</strong> ${formatarLabel(jogo.plataforma)}</p>
-            <p><strong>Ano:</strong> ${jogo.ano}</p>
+            <p><strong>Ano:</strong> ${jogo.ano || 'Não informado'}</p>
             <p><strong>Status:</strong> ${formatarLabel(jogo.status)}</p>
             <p><strong>Avaliação:</strong> ${jogo.avaliacao ? jogo.avaliacao + '/5' : 'N/A'}</p>
             
@@ -257,4 +282,12 @@ formCadastro.addEventListener('submit', function (event) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(jogos));
     renderizarJogos();
     formCadastro.reset();
+});
+
+// Lógica de Pesquisa e Filtros
+const formPesquisa = document.getElementById('form-pesquisa');
+
+formPesquisa.addEventListener('submit', function(event) {
+    event.preventDefault(); // Evita recarregar a página
+    renderizarJogos(); // A função de renderizar já sabe ler os campos e filtrar!
 });
