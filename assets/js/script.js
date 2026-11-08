@@ -291,3 +291,44 @@ formPesquisa.addEventListener('submit', function(event) {
     event.preventDefault(); // Evita recarregar a página
     renderizarJogos(); // A função de renderizar já sabe ler os campos e filtrar!
 });
+
+// --- PASSO 6: INTEGRAÇÃO COM API EXTERNA ---
+const btnBuscarApi = document.getElementById('btn-buscar-api');
+
+btnBuscarApi.addEventListener('click', async function() {
+    const nomeInput = document.getElementById('nome-jogo');
+    const termoBusca = nomeInput.value.trim();
+
+    if (!termoBusca) {
+        alert('Por favor, digite pelo menos parte do nome do jogo para buscar.');
+        return;
+    }
+
+    // Muda o texto do botão enquanto carrega
+    btnBuscarApi.textContent = 'Buscando...';
+    btnBuscarApi.disabled = true;
+
+    try {
+        // Consumindo a API pública do CheapShark para buscar jogos
+        const response = await fetch(`https://www.cheapshark.com/api/1.0/games?title=${termoBusca}`);
+        const data = await response.json();
+
+        if (data && data.length > 0) {
+            // Pega o nome oficial do primeiro resultado retornado pela API
+            const jogoEncontrado = data[0].external; 
+            
+            // Preenche o input com o nome correto
+            nomeInput.value = jogoEncontrado; 
+            alert(`Jogo encontrado na base de dados externa: ${jogoEncontrado}`);
+        } else {
+            alert('Nenhum jogo encontrado com esse nome na API.');
+        }
+    } catch (error) {
+        console.error('Erro ao buscar na API:', error);
+        alert('Erro ao conectar com a base de dados externa.');
+    } finally {
+        // Restaura o botão ao estado normal
+        btnBuscarApi.textContent = 'Buscar na Web';
+        btnBuscarApi.disabled = false;
+    }
+});
